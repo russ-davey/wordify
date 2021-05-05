@@ -1,4 +1,4 @@
-# wordify-numbers
+# wordify
 
 A Clojure library designed to convert numbers into the language word equivalents 
 (i.e 1024 = "one thousand and twenty four").
@@ -8,7 +8,7 @@ A Clojure library designed to convert numbers into the language word equivalents
 Example:
 
 ```
-(wordify-numbers/wordify-number 50472)
+(wordify/wordify-number 50472)
 => "fifty thousand four hundred and seventy two"
 ```
 
@@ -21,12 +21,12 @@ lein install
 
 Add the following to your project :dependencies:
 ```
-[wordify-numbers "0.1.0"]
+[wordify "0.1.0"]
 ```
 
 And add to your namespace:
 ```
-(:require [wordify-numbers.core :as wordify-numbers])
+(:require [wordify.core :as wordify])
 ```
 
 ## License

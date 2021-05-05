@@ -1,6 +1,6 @@
-(ns wordify-numbers.core
+(ns wordify.core
   (:gen-class)
-  (:require [wordify-numbers.number-stringify :refer [int->words]]))
+  (:require [wordify.number-wordify :refer [int->words]]))
 
 (comment
   " ROADMAP:

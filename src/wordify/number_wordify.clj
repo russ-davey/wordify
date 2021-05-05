@@ -1,4 +1,4 @@
-(ns wordify-numbers.number-stringify
+(ns wordify.number-wordify
   (:require [clojure.string :as string]))
 
 (def ^:private lower-numbers {"0" "zero"

@@ -1,7 +1,7 @@
-(ns wordify-numbers.number-stringify-test
+(ns wordify.number-wordify-test
   (:require [clojure.test :refer :all]
-            [wordify-numbers.number-stringify :as target]
-            [wordify-numbers.data.test-data :as td]))
+            [wordify.number-wordify :as target]
+            [wordify.data.test-data :as td]))
 
 (deftest negative-numbers-test
   (let [results (target/int->words -101)]

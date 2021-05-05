@@ -1,4 +1,4 @@
-(ns wordify-numbers.data.test-data)
+(ns wordify.data.test-data)
 
 (def numbers-as-words
   ["zero"
