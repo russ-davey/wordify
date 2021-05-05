@@ -32,7 +32,12 @@
                                "8" "eighty"
                                "9" "ninety"})
 
-(def ^:private large-numbers {18 "quintillion"
+(def ^:private large-numbers {33 "decillion"
+                              30 "nonillion"
+                              27 "octillion"
+                              24 "septillion"
+                              21 "sextillion"
+                              18 "quintillion"
                               15 "quadrillion"
                               12 "trillion"
                               9 "billion"
@@ -59,9 +64,11 @@
   [i]
   (when-not (zero? i)
     (let [magnitude (int (Math/log10 i))]
-      (first (filter (fn [[large-number-int _]]
-                       (>= magnitude large-number-int))
-                     large-numbers)))))
+      (first (-> (filter (fn [[large-number-int _]]
+                           (>= magnitude large-number-int))
+                         large-numbers)
+                 sort
+                 reverse)))))
 
 (defn- has-no-remainder?
   "given an integer divides by 10, returns true if there are no remainders and false if there are"
@@ -70,9 +77,7 @@
 (defn- within-acceptable-params?
   "given a number, validates that it is within acceptable parameters (i.e. is an int)"
   [number]
-  (and (int? number)
-       (> number -999999999999998)
-       (< number 999999999999998)))
+  (int? number))
 
 (defn int->words
   [i]
@@ -99,11 +104,9 @@
                         conjunctive (if (between-zero-and-one-hundred? rest-words)
                                       " and "
                                       " ")]
-                    (if (has-no-remainder? i)
-                      (str (int->words first-word) " " large-number-str)
-                      (str (int->words first-word)
-                           " "
-                           large-number-str
-                           conjunctive
-                           (int->words rest-words))))))
+                    (str (int->words first-word)
+                         " "
+                         large-number-str
+                         conjunctive
+                         (int->words rest-words)))))
         string/trim)))

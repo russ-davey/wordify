@@ -51,12 +51,19 @@
       (is (= "fifty six million nine hundred and forty five thousand seven hundred and eighty one" (first results)))
       (is (= "nine hundred and ninety nine million nine hundred and ninety nine thousand nine hundred and ninety nine" (second results))))))
 
+(deftest extra-large-number-test
+  (testing "billions"
+    (let [test-numbers [7439647773 74396477730]
+          results (map target/int->words test-numbers)]
+      (is (= "seven billion four hundred and thirty nine million six hundred and forty seven thousand seven hundred and seventy three" (first results)))
+      (is (= "seventy four billion three hundred and ninety six million four hundred and seventy seven thousand seven hundred and thirty" (second results))))))
+
 (deftest unhappy-paths
   ; given a string returns nil
   (is (= nil (target/int->words "1")))
   ; given a float returns nil
   (is (= nil (target/int->words 100.03434)))
   ; given the max number, does not return nil
-  (is (not (nil? (target/int->words 999999999999997))))
+  (is (not (nil? (target/int->words 7439647657730540004))))
   ; given a number above max returns nil
-  (is (= nil (target/int->words 999999999999999))))
+  (is (= nil (target/int->words 74396476577305400045))))
