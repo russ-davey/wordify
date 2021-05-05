@@ -71,7 +71,7 @@
   "given a number, validates that it is within acceptable parameters (i.e. is an int)"
   [number]
   (and (int? number)
-       (not (neg-int? number))
+       (> number -999999999999998)
        (< number 999999999999998)))
 
 (defn int->words
@@ -80,6 +80,8 @@
     (-> (let [s (str i)
               str-len (count s)]
           (cond
+            (< i 0) (str "negative "
+                         (int->words (- i)))
             (<= i 20) (lower-numbers s)
             (< i 100) (let [first-word (subs s 0 1)
                             second-word (subs s 1 2)]

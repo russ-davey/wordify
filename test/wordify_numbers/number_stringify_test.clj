@@ -3,6 +3,10 @@
             [wordify-numbers.number-stringify :as target]
             [wordify-numbers.data.test-data :as td]))
 
+(deftest negative-numbers-test
+  (let [results (target/int->words -101)]
+    (is (= "negative one hundred and one" results))))
+
 (deftest lower-number-test
   (let [test-numbers (range 0 21)
         results (map target/int->words test-numbers)]
@@ -50,8 +54,6 @@
 (deftest unhappy-paths
   ; given a string returns nil
   (is (= nil (target/int->words "1")))
-  ; given a negative int returns nil
-  (is (= nil (target/int->words -1)))
   ; given a float returns nil
   (is (= nil (target/int->words 100.03434)))
   ; given the max number, does not return nil
