@@ -56,7 +56,23 @@
     (let [test-numbers [7439647773 74396477730]
           results (map target/int->words test-numbers)]
       (is (= "seven billion four hundred and thirty nine million six hundred and forty seven thousand seven hundred and seventy three" (first results)))
-      (is (= "seventy four billion three hundred and ninety six million four hundred and seventy seven thousand seven hundred and thirty" (second results))))))
+      (is (= "seventy four billion three hundred and ninety six million four hundred and seventy seven thousand seven hundred and thirty" (second results)))))
+
+  (testing "quadrillion"
+    (let [test-numbers [9999999999999999]
+          results (map target/int->words test-numbers)]
+      (is (= "nine quadrillion nine hundred and ninety nine trillion nine hundred and ninety nine billion nine hundred and ninety nine million nine hundred and ninety nine thousand nine hundred and ninety nine" (first results)))))
+
+  (testing "quintillion"
+    (let [test-numbers [9999999999999999999]
+          results (map target/int->words test-numbers)]
+      (is (= "nine quintillion nine hundred and ninety nine quadrillion nine hundred and ninety nine trillion nine hundred and ninety nine billion nine hundred and ninety nine million nine hundred and ninety nine thousand nine hundred and ninety nine" (first results)))))
+
+  (testing "tredecillion"
+    (let [test-numbers (bigint (apply str (repeat 46 "9")))
+          results (target/int->words test-numbers)]
+      (is (= "nine thousand nine hundred and ninety nine tredecillion nine hundred and ninety nine duodecillion nine hundred and ninety nine undecillion nine hundred and ninety nine decillion nine hundred and ninety nine nonillion nine hundred and ninety nine octillion nine hundred and ninety nine septillion nine hundred and ninety nine sextillion nine hundred and ninety nine quintillion nine hundred and ninety nine quadrillion nine hundred and ninety nine trillion nine hundred and ninety nine billion nine hundred and ninety nine million nine hundred and ninety nine thousand nine hundred and ninety nine"
+             results)))))
 
 (deftest unhappy-paths
   ; given a string returns nil
@@ -66,4 +82,4 @@
   ; given the max number, does not return nil
   (is (not (nil? (target/int->words 7439647657730540004))))
   ; given a number above max returns nil
-  (is (= nil (target/int->words 74396476577305400045))))
+  (is (= nil (target/int->words (bigint (apply str (repeat 47 "9")))))))

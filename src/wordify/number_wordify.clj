@@ -1,5 +1,7 @@
 (ns wordify.number-wordify
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [wordify.conversion-utils :refer [safe-parse-long safe-parse-big-int]])
+  (:import (clojure.lang BigInt)))
 
 (def ^:private lower-numbers {"0" "zero"
                               "1" "one"
@@ -32,7 +34,10 @@
                                "8" "eighty"
                                "9" "ninety"})
 
-(def ^:private large-numbers {33 "decillion"
+(def ^:private large-numbers {42 "tredecillion"
+                              39 "duodecillion"
+                              36 "undecillion"
+                              33 "decillion"
                               30 "nonillion"
                               27 "octillion"
                               24 "septillion"
@@ -45,25 +50,21 @@
                               3 "thousand"
                               2 "hundred"})
 
-(defn- safe-parse-long
-  "given a string attempts to parse it as an integer"
-  [str]
-  (try
-    (Long/parseLong str)
-    (catch NumberFormatException _
-      nil)))
-
 (defn- between-zero-and-one-hundred?
   [i]
   (when i
     (and (> i 0) (< i 100))))
+
+(defn- get-magnitude-number
+  [n]
+  (-> n str count (- 1)))
 
 (defn- get-order-of-magnitude
   "given an integer convert to a base10 integer and return the matching magnitude and large number string
   from the large-numbers map"
   [i]
   (when-not (zero? i)
-    (let [magnitude (int (Math/log10 i))]
+    (let [magnitude (get-magnitude-number i)]
       (first (-> (filter (fn [[large-number-int _]]
                            (>= magnitude large-number-int))
                          large-numbers)
@@ -77,36 +78,50 @@
 (defn- within-acceptable-params?
   "given a number, validates that it is within acceptable parameters (i.e. is an int)"
   [number]
-  (int? number))
+  (let [int-or-big-int (or (int? number)
+                           (instance? BigInt number))
+        within-range (<= (get-magnitude-number number) (+ (apply max (keys large-numbers)) 3))]
+    (every? true? [int-or-big-int within-range])))
+
+(defn- int->words-converter
+  [i]
+  (-> (let [s (str i)
+            str-len (count s)]
+        (cond
+          (< i 0) (str "negative "
+                       (int->words-converter (- i)))
+          (<= i 20) (lower-numbers s)
+          (< i 100) (let [first-word (subs s 0 1)
+                          second-word (subs s 1 2)]
+                      (if (has-no-remainder? i)
+                        (higher-numbers first-word)
+                        (str (higher-numbers first-word) " " (lower-numbers second-word))))
+          :else (let [[magnitude large-number-str] (get-order-of-magnitude i)
+                      offset (- str-len magnitude)
+                      first-word (-> (subs s 0 offset)
+                                     safe-parse-long)
+                      rest-words-int (-> (subs s offset str-len)
+                                         safe-parse-big-int)
+                      rest-words (when-not (zero? rest-words-int)
+                                   rest-words-int)
+                      conjunctive (if (between-zero-and-one-hundred? rest-words)
+                                    " and "
+                                    " ")]
+                  (if (and (nil? rest-words) (has-no-remainder? i))
+                    (str (int->words first-word) " " large-number-str)
+                    (str (int->words-converter first-word)
+                         " "
+                         large-number-str
+                         conjunctive
+                         (int->words-converter rest-words))))))
+      string/trim))
 
 (defn int->words
   [i]
   (when (within-acceptable-params? i)
-    (-> (let [s (str i)
-              str-len (count s)]
-          (cond
-            (< i 0) (str "negative "
-                         (int->words (- i)))
-            (<= i 20) (lower-numbers s)
-            (< i 100) (let [first-word (subs s 0 1)
-                            second-word (subs s 1 2)]
-                        (if (has-no-remainder? i)
-                          (higher-numbers first-word)
-                          (str (higher-numbers first-word) " " (lower-numbers second-word))))
-            :else (let [[magnitude large-number-str] (get-order-of-magnitude i)
-                        offset (- str-len magnitude)
-                        first-word (-> (subs s 0 offset)
-                                       safe-parse-long)
-                        rest-words-int (-> (subs s offset str-len)
-                                           safe-parse-long)
-                        rest-words (when-not (zero? rest-words-int)
-                                     rest-words-int)
-                        conjunctive (if (between-zero-and-one-hundred? rest-words)
-                                      " and "
-                                      " ")]
-                    (str (int->words first-word)
-                         " "
-                         large-number-str
-                         conjunctive
-                         (int->words rest-words)))))
-        string/trim)))
+    (int->words-converter i)))
+
+(defn string->words
+  [i]
+  (when-let [number (safe-parse-big-int i)]
+    (int->words number)))

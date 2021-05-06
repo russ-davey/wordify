@@ -3,7 +3,8 @@
   (:require [wordify.number-wordify :refer [int->words]]))
 
 (comment
-  " ROADMAP:
+  "ROADMAP:
+  Convert string to ints automatically?
   Support decimals?
   Go beyond 1 trillion
   multi-lingual?
