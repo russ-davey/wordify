@@ -80,7 +80,7 @@
   [number]
   (let [int-or-big-int (or (int? number)
                            (instance? BigInt number))
-        within-range (<= (get-magnitude-number number) (+ (apply max (keys large-numbers)) 3))]
+        within-range (<= (get-magnitude-number number) (+ (apply max (keys large-numbers)) 2))]
     (every? true? [int-or-big-int within-range])))
 
 (defn- int->words-converter
@@ -108,7 +108,7 @@
                                     " and "
                                     " ")]
                   (if (and (nil? rest-words) (has-no-remainder? i))
-                    (str (int->words first-word) " " large-number-str)
+                    (str (int->words-converter first-word) " " large-number-str)
                     (str (int->words-converter first-word)
                          " "
                          large-number-str
