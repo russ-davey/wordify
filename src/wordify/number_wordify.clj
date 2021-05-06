@@ -100,14 +100,12 @@
                       offset (- str-len magnitude)
                       first-word (-> (subs s 0 offset)
                                      safe-parse-long)
-                      rest-words-int (-> (subs s offset str-len)
+                      rest-words (-> (subs s offset str-len)
                                          safe-parse-big-int)
-                      rest-words (when-not (zero? rest-words-int)
-                                   rest-words-int)
                       conjunctive (if (between-zero-and-one-hundred? rest-words)
                                     " and "
                                     " ")]
-                  (if (and (nil? rest-words) (has-no-remainder? i))
+                  (if (zero? rest-words)
                     (str (int->words-converter first-word) " " large-number-str)
                     (str (int->words-converter first-word)
                          " "
