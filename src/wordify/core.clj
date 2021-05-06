@@ -1,10 +1,9 @@
 (ns wordify.core
   (:gen-class)
-  (:require [wordify.number-wordify :refer [int->words]]))
+  (:require [wordify.number-wordify :refer [int->words string->words]]))
 
 (comment
   "ROADMAP:
-  Convert string to ints automatically?
   Support decimals?
   Go beyond 1 trillion
   multi-lingual?
@@ -14,5 +13,7 @@
 (defn wordify-number
   "Given an integer of zero or above, returns the equivalent number in British English words,
   otherwise returns nil"
-  [i]
-  (int->words i))
+  [n]
+  (if (string? n)
+    (string->words n)
+    (int->words n)))

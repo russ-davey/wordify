@@ -4,7 +4,7 @@
 
 (deftest parse-string-into-integers
   (testing "basic"
-    (let [result (target/safe-parse-long "343243243")]
+    (let [result (target/safe-parse-int "343243243")]
       (is (= 343243243 result)))))
 
 (deftest parse-strings-into-big-int

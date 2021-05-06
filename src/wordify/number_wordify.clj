@@ -1,6 +1,6 @@
 (ns wordify.number-wordify
   (:require [clojure.string :as string]
-            [wordify.conversion-utils :refer [safe-parse-long safe-parse-big-int]])
+            [wordify.conversion-utils :refer [safe-parse-int safe-parse-big-int]])
   (:import (clojure.lang BigInt)))
 
 (def ^:private lower-numbers {"0" "zero"
@@ -99,9 +99,9 @@
           :else (let [[magnitude large-number-str] (get-order-of-magnitude i)
                       offset (- str-len magnitude)
                       first-word (-> (subs s 0 offset)
-                                     safe-parse-long)
+                                     safe-parse-int)
                       rest-words (-> (subs s offset str-len)
-                                         safe-parse-big-int)
+                                     safe-parse-big-int)
                       conjunctive (if (between-zero-and-one-hundred? rest-words)
                                     " and "
                                     " ")]

@@ -77,6 +77,8 @@
 (deftest unhappy-paths
   ; given a string returns nil
   (is (= nil (target/int->words "1")))
+  ; given a string without numbers returns nil
+  (is (= nil (target/int->words "dsfdsfds")))
   ; given a float returns nil
   (is (= nil (target/int->words 100.03434)))
   ; given the max number, does not return nil
