@@ -1,11 +1,11 @@
 (ns wordify.core
   (:gen-class)
-  (:require [wordify.number-wordify :refer [int->words string->words]]))
+  (:require [wordify.number-wordify :refer [int-number->words string-number->words
+                                            double-number->words]]))
 
 (comment
   "ROADMAP:
   Support decimals?
-  Go beyond 1 trillion
   multi-lingual?
   Phone number to words i.e. 01254 = zero one two five four"
   )
@@ -14,6 +14,7 @@
   "Given an integer of zero or above, returns the equivalent number in British English words,
   otherwise returns nil"
   [n]
-  (if (string? n)
-    (string->words n)
-    (int->words n)))
+  (condp apply [n]
+    string? (string-number->words n)
+    double? (double-number->words n)
+    (int-number->words n)))

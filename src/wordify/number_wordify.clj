@@ -50,6 +50,15 @@
                               3 "thousand"
                               2 "hundred"})
 
+(def ^:private large-numbers-extended
+  (reduce (fn [new-map [mag-int mag]]
+            (if (> mag-int 2)
+              (merge new-map {(+ 1 mag-int) (str "ten-" mag)
+                              (+ 2 mag-int) (str "hundred-" mag)})
+              new-map))
+          large-numbers
+          large-numbers))
+
 (defn- between-zero-and-one-hundred?
   [i]
   (when i
@@ -62,14 +71,16 @@
 (defn- get-order-of-magnitude
   "given an integer convert to a base10 integer and return the matching magnitude and large number string
   from the large-numbers map"
-  [i]
-  (when-not (zero? i)
-    (let [magnitude (get-magnitude-number i)]
-      (first (-> (filter (fn [[large-number-int _]]
-                           (>= magnitude large-number-int))
-                         large-numbers)
-                 sort
-                 reverse)))))
+  ([i]
+   (get-order-of-magnitude i large-numbers))
+  ([i number-map]
+   (when-not (zero? i)
+     (let [magnitude (get-magnitude-number i)]
+       (first (-> (filter (fn [[large-number-int _]]
+                            (>= magnitude large-number-int))
+                          number-map)
+                  sort
+                  reverse))))))
 
 (defn- has-no-remainder?
   "given an integer divides by 10, returns true if there are no remainders and false if there are"
@@ -83,13 +94,13 @@
         within-range (<= (get-magnitude-number number) (+ (apply max (keys large-numbers)) 2))]
     (every? true? [int-or-big-int within-range])))
 
-(defn- int->words-converter
+(defn- int->words
   [i]
   (-> (let [s (str i)
             str-len (count s)]
         (cond
           (< i 0) (str "negative "
-                       (int->words-converter (- i)))
+                       (int->words (- i)))
           (<= i 20) (lower-numbers s)
           (< i 100) (let [first-word (subs s 0 1)
                           second-word (subs s 1 2)]
@@ -106,20 +117,31 @@
                                     " and "
                                     " ")]
                   (if (zero? rest-words)
-                    (str (int->words-converter first-word) " " large-number-str)
-                    (str (int->words-converter first-word)
+                    (str (int->words first-word) " " large-number-str)
+                    (str (int->words first-word)
                          " "
                          large-number-str
                          conjunctive
-                         (int->words-converter rest-words))))))
+                         (int->words rest-words))))))
       string/trim))
 
-(defn int->words
+(defn int-number->words
   [i]
   (when (within-acceptable-params? i)
-    (int->words-converter i)))
+    (int->words i)))
 
-(defn string->words
+(defn string-number->words
   [i]
   (when-let [number (safe-parse-big-int i)]
-    (int->words number)))
+    (int-number->words number)))
+
+(defn double-number->words
+  [i]
+  (when-let [[int-number dec-number] (clojure.string/split (str i) #"\.")]
+    (let [[_ magnitude] (get-order-of-magnitude (-> dec-number safe-parse-big-int (* 10))
+                                                large-numbers-extended)]
+      (str (string-number->words int-number)
+           " and "
+           (string-number->words dec-number)
+           (when magnitude
+             (str " " magnitude "ths"))))))
