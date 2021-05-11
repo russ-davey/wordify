@@ -14,6 +14,7 @@
   "Given an integer of zero or above, returns the equivalent number in British English words,
   otherwise returns nil"
   [n]
+  (println n)
   (condp apply [n]
     string? (string-number->words n)
     double? (double-number->words n)

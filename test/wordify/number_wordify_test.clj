@@ -72,17 +72,31 @@
     (let [test-numbers (bigint (apply str (repeat 45 "9")))
           results (target/int-number->words test-numbers)]
       (is (= "nine hundred and ninety nine tredecillion nine hundred and ninety nine duodecillion nine hundred and ninety nine undecillion nine hundred and ninety nine decillion nine hundred and ninety nine nonillion nine hundred and ninety nine octillion nine hundred and ninety nine septillion nine hundred and ninety nine sextillion nine hundred and ninety nine quintillion nine hundred and ninety nine quadrillion nine hundred and ninety nine trillion nine hundred and ninety nine billion nine hundred and ninety nine million nine hundred and ninety nine thousand nine hundred and ninety nine"
+             results))))
+
+  (testing "vigintillion"
+    (let [test-numbers (bigint (str "1" (apply str (repeat 65 "0"))))
+          results (target/int-number->words test-numbers)]
+      (is (= "one hundred vigintillion"
              results)))))
 
 (deftest numbers-as-strings)
 
-(deftest numbers-as-doubles)
+(deftest numbers-as-doubles
+  (let [test-numbers [1.2 1.23 5.6 567.232]
+        results (map target/double-number->words test-numbers)]
+    (is (= "one and two tenths" (first results)))
+    (is (= "one and twenty three hundredths" (second results)))
+    (is (= "five and six tenths" (nth results 2)))
+    (is (= "five hundred and sixty seven and two hundred and thirty two thousandths" (nth results 3)))))
 
 (deftest unhappy-paths
   ; given a string returns nil
   (is (= nil (target/int-number->words "1")))
   ; given a string without numbers returns nil
   (is (= nil (target/int-number->words "dsfdsfds")))
+  ; given a keyword returns nil
+  (is (= nil (target/int-number->words :34)))
   ; given a float returns nil
   (is (= nil (target/int-number->words 100.03434)))
   ; given the max number, does not return nil

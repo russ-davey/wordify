@@ -34,7 +34,14 @@
                                "8" "eighty"
                                "9" "ninety"})
 
-(def ^:private large-numbers {42 "tredecillion"
+(def ^:private large-numbers {63 "vigintillion"
+                              60 "novemdecillion"
+                              57 "octodecillion"
+                              54 "septendecillion"
+                              51 "sexdecillion"
+                              48 "quindecillion"
+                              45 "quattuordecillion"
+                              42 "tredecillion"
                               39 "duodecillion"
                               36 "undecillion"
                               33 "decillion"
@@ -56,7 +63,7 @@
               (merge new-map {(+ 1 mag-int) (str "ten-" mag)
                               (+ 2 mag-int) (str "hundred-" mag)})
               new-map))
-          large-numbers
+          (merge large-numbers {1 "ten"})
           large-numbers))
 
 (defn- between-zero-and-one-hundred?
@@ -96,34 +103,34 @@
 
 (defn- int->words
   [i]
-  (-> (let [s (str i)
-            str-len (count s)]
-        (cond
-          (< i 0) (str "negative "
-                       (int->words (- i)))
-          (<= i 20) (lower-numbers s)
-          (< i 100) (let [first-word (subs s 0 1)
-                          second-word (subs s 1 2)]
-                      (if (has-no-remainder? i)
-                        (higher-numbers first-word)
-                        (str (higher-numbers first-word) " " (lower-numbers second-word))))
-          :else (let [[magnitude large-number-str] (get-order-of-magnitude i)
-                      offset (- str-len magnitude)
-                      first-word (-> (subs s 0 offset)
-                                     safe-parse-int)
-                      rest-words (-> (subs s offset str-len)
-                                     safe-parse-big-int)
-                      conjunctive (if (between-zero-and-one-hundred? rest-words)
-                                    " and "
-                                    " ")]
-                  (if (zero? rest-words)
-                    (str (int->words first-word) " " large-number-str)
-                    (str (int->words first-word)
-                         " "
-                         large-number-str
-                         conjunctive
-                         (int->words rest-words))))))
-      string/trim))
+  (let [s (str i)
+        str-len (count s)]
+    (cond
+      (< i 0) (str "negative "
+                   (int->words (- i)))
+      (<= i 20) (lower-numbers s)
+      (< i 100) (let [first-word (subs s 0 1)
+                      second-word (subs s 1 2)]
+                  (if (has-no-remainder? i)
+                    (higher-numbers first-word)
+                    (str (higher-numbers first-word) " " (lower-numbers second-word))))
+      :else (let [[magnitude large-number-str] (get-order-of-magnitude i)
+                  offset (- str-len magnitude)
+                  first-word (-> (subs s 0 offset)
+                                 safe-parse-int)
+                  rest-words (-> (subs s offset str-len)
+                                 safe-parse-big-int)
+                  conjunctive (if (between-zero-and-one-hundred? rest-words)
+                                " and "
+                                " ")]
+              (when-not (= i rest-words)
+                (if (zero? rest-words)
+                  (str (int->words first-word) " " large-number-str)
+                  (str (int->words first-word)
+                       " "
+                       large-number-str
+                       conjunctive
+                       (int->words rest-words))))))))
 
 (defn int-number->words
   [i]
