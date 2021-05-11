@@ -8,5 +8,5 @@
       (is (= 343243243 result)))))
 
 (deftest parse-strings-into-big-int
-  (let [result (target/safe-parse-big-integer "9999999999999999999")]
+  (let [result (target/safe-parse-big-int "9999999999999999999")]
     (is (= 9999999999999999999 result))))
