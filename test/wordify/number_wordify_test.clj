@@ -102,4 +102,4 @@
   ; given the max number, does not return nil
   (is (not (nil? (target/int-number->words 7439647657730540004))))
   ; given a number above max returns nil
-  (is (= nil (target/int-number->words (bigint (apply str (repeat 47 "9")))))))
+  (is (= nil (target/int-number->words (bigint (apply str (repeat 67 "9")))))))
