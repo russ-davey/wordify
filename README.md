@@ -10,6 +10,12 @@ Example:
 ```
 (wordify/wordify-number 50472)
 => "fifty thousand four hundred and seventy two"
+
+(wordify/wordify-number "50472")
+=> "fifty thousand four hundred and seventy two"
+
+(wordify/wordify-number 50.472)
+=> "fifty and four hundred and seventy two thousandths"
 ```
 
 ## Installation
