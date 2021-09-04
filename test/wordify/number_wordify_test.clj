@@ -93,7 +93,6 @@
 (deftest currency
   (let [test-numbers ["£1" "£1.23" "£5.67" "£567.32"]
         results (map target/currency-number->words test-numbers)]
-    (println results)
     (is (= "one pound" (first results)))
     (is (= "one pound and twenty three pence" (second results)))
     (is (= "five pounds and sixty seven pence" (nth results 2)))
