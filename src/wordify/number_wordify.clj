@@ -1,6 +1,6 @@
 (ns wordify.number-wordify
-  (:require [clojure.string :as string]
-            [wordify.conversion-utils :refer [safe-parse-int safe-parse-big-int]])
+  (:require [wordify.conversion-utils :refer [safe-parse-int safe-parse-big-int]]
+            [clojure.string :as str])
   (:import (clojure.lang BigInt)))
 
 (def ^:private lower-numbers {"0" "zero"
@@ -154,7 +154,7 @@
 
 (defn double-number->words
   [i]
-  (when-let [[int-number dec-number] (clojure.string/split (str i) #"\.")]
+  (when-let [[int-number dec-number] (str/split (str i) #"\.")]
     (let [[_ magnitude] (get-order-of-magnitude (-> dec-number safe-parse-big-int (* 10))
                                                 large-numbers-extended)]
       (str (string-number->words int-number)
@@ -162,3 +162,20 @@
            (string-number->words dec-number)
            (when magnitude
              (str " " magnitude "ths"))))))
+
+(def ^:private large-symbol->currency
+  {"£" ["pound" "pence"]
+   "$" "dollar"
+   "€" "euro"
+   "¥" "yen"})
+
+(defn currency-number->words
+  [c]
+  (let [[large-symbol small-symbol] (large-symbol->currency (subs c 0 1))
+        value (str/trim (subs c 1))
+        [large-value small-value] (str/split value #"\.")]
+    (str (string-number->words large-value) " " large-symbol
+         (when (not (= "1" large-value))
+           "s")
+         (when small-value
+           (str " and " (string-number->words small-value) " " small-symbol)))))
