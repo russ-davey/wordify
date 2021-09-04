@@ -5,7 +5,9 @@ A Clojure library designed to convert numbers into the language word equivalents
 
 ## Usage
 
-Example:
+Examples:
+
+### Numbers
 
 ```
 (wordify/wordify-number 50472)
@@ -16,6 +18,12 @@ Example:
 
 (wordify/wordify-number 50.472)
 => "fifty and four hundred and seventy two thousandths"
+```
+
+### Currency
+```
+(wordify/wordify-currency "£153.47")
+=> one hundred and fifty three pounds and forty seven pence"
 ```
 
 ## Installation
