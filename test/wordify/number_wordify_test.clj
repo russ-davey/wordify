@@ -91,14 +91,17 @@
     (is (= "five hundred and sixty seven and two hundred and thirty two thousandths" (nth results 3)))))
 
 (deftest currency
-  (let [test-numbers ["£1" "£1.23" "£5.67" "£567.32"]
+  (let [test-numbers ["£0.23" "£1" "£1.23" "£5.67" "£567.32"]
         results (map target/currency-number->words test-numbers)]
-    (is (= "one pound" (first results)))
-    (is (= "one pound and twenty three pence" (second results)))
-    (is (= "five pounds and sixty seven pence" (nth results 2)))
-    (is (= "five hundred and sixty seven pounds and thirty two pence" (nth results 3)))))
+    (is (= "twenty three pence" (first results)))
+    (is (= "one pound" (second results)))
+    (is (= "one pound and twenty three pence" (nth results 2)))
+    (is (= "five pounds and sixty seven pence" (nth results 3)))
+    (is (= "five hundred and sixty seven pounds and thirty two pence" (nth results 4)))))
 
-(deftest unhappy-paths
+(deftest currency-unhappy-paths)
+
+(deftest number-unhappy-paths
   ; given a string returns nil
   (is (= nil (target/int-number->words "1")))
   ; given a string without numbers returns nil
