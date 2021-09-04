@@ -174,8 +174,11 @@
   (let [[large-symbol small-symbol] (large-symbol->currency (subs c 0 1))
         value (str/trim (subs c 1))
         [large-value small-value] (str/split value #"\.")]
-    (str (string-number->words large-value) " " large-symbol
-         (when (not (= "1" large-value))
-           "s")
+    (str (when (not (= "0" large-value))
+           (str (string-number->words large-value) " " large-symbol
+                (when (not (= "1" large-value))
+                  "s")))
+         (when (and small-value (not (= "0" large-value)))
+           (str " and "))
          (when small-value
-           (str " and " (string-number->words small-value) " " small-symbol)))))
+           (str (string-number->words small-value) " " small-symbol)))))
