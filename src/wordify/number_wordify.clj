@@ -163,22 +163,37 @@
            (when magnitude
              (str " " magnitude "ths"))))))
 
+;TODO: work on plurals
 (def ^:private large-symbol->currency
   {"£" ["pound" "pence"]
-   "$" "dollar"
-   "€" "euro"
+   "$" ["dollar" "cent"]
+   "€" ["euro" "cent"]
    "¥" "yen"})
+
+(defn- display-large-value
+  [large-value large-symbol]
+  (when large-value
+    (let [large-value-int (safe-parse-big-int large-value)]
+      (when (> large-value-int 0)
+        (str (string-number->words large-value) " " large-symbol
+             (when (not (= 1 large-value-int))
+               "s"))))))
+
+(defn- display-small-value
+  [small-value small-symbol]
+  (when small-value
+    (let [small-value-int (safe-parse-int small-value)]
+      (when (> small-value-int 0)
+        (str (string-number->words small-value) " " small-symbol)))))
 
 (defn currency-number->words
   [c]
-  (let [[large-symbol small-symbol] (large-symbol->currency (subs c 0 1))
-        value (str/trim (subs c 1))
-        [large-value small-value] (str/split value #"\.")]
-    (str (when (not (= "0" large-value))
-           (str (string-number->words large-value) " " large-symbol
-                (when (not (= "1" large-value))
-                  "s")))
-         (when (and small-value (not (= "0" large-value)))
-           (str " and "))
-         (when small-value
-           (str (string-number->words small-value) " " small-symbol)))))
+  (when-let [[large-symbol small-symbol] (large-symbol->currency (subs c 0 1))]
+    (let [value (str/trim (subs c 1))
+          [large-value small-value] (str/split value #"\.")
+          large-value-output (display-large-value large-value large-symbol)
+          small-value-output (display-small-value small-value small-symbol)]
+      (str large-value-output
+           (when (and large-value-output small-value-output)
+             " and ")
+           small-value-output))))
