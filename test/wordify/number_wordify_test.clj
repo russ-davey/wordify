@@ -99,7 +99,8 @@
     (is (= "five pounds and sixty seven pence" (nth results 3)))
     (is (= "five hundred and sixty seven pounds and thirty two pence" (nth results 4)))))
 
-(deftest currency-unhappy-paths)
+(deftest currency-unhappy-paths
+  (is (= nil (target/currency-number->words "1.23"))))
 
 (deftest number-unhappy-paths
   ; given a string returns nil
