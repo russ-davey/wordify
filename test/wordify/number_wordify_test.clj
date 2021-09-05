@@ -90,17 +90,20 @@
     (is (= "five and six tenths" (nth results 2)))
     (is (= "five hundred and sixty seven and two hundred and thirty two thousandths" (nth results 3)))))
 
-(deftest currency
-  (let [test-numbers ["£0.23" "£1" "£1.23" "£5.67" "£567.32"]
-        results (map target/currency-number->words test-numbers)]
+(deftest currency-happy-paths
+  (let [test-currencies ["£0.23" "£1" "£1.23" "£5.67" "£567.32" "£1234567.53" "£1.00"]
+        results (map target/currency-number->words test-currencies)]
     (is (= "twenty three pence" (first results)))
     (is (= "one pound" (second results)))
     (is (= "one pound and twenty three pence" (nth results 2)))
     (is (= "five pounds and sixty seven pence" (nth results 3)))
-    (is (= "five hundred and sixty seven pounds and thirty two pence" (nth results 4)))))
+    (is (= "five hundred and sixty seven pounds and thirty two pence" (nth results 4)))
+    (is (= "one million two hundred and thirty four thousand five hundred and sixty seven pounds and fifty three pence" (nth results 5)))
+    (is (= "one pound" (nth results 6)))))
 
 (deftest currency-unhappy-paths
-  (is (= nil (target/currency-number->words "1.23"))))
+  (testing "no currency symbol"
+    (is (= nil (target/currency-number->words "1.23")))))
 
 (deftest number-unhappy-paths
   ; given a string returns nil
