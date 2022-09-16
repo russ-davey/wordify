@@ -1,0 +1,17 @@
+name: "Unit test"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use oxr463/setup-leiningen
+        uses: ./
+        with:
+          exec: |
+            lein test
