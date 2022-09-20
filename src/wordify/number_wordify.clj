@@ -34,7 +34,17 @@
                                "8" "eighty"
                                "9" "ninety"})
 
-(def ^:private large-numbers {63 "vigintillion"
+(def ^:private large-numbers {93 "trigintillion"
+                              90 "novemvigintillion"
+                              87 "octovigintillion"
+                              84 "septenvigintillion"
+                              81 "sesvigintillion"
+                              78 "quinvigintillion"
+                              75 "quattuorvigintillion"
+                              72 "tresvigintillion"
+                              69 "duovigintillion"
+                              66 "unvigintillion"
+                              63 "vigintillion"
                               60 "novemdecillion"
                               57 "octodecillion"
                               54 "septendecillion"
