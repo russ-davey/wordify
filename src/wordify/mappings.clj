@@ -64,9 +64,9 @@
                           3  "thousand"
                           2  "hundred"})
 
-;TODO: work on plurals
+; large symbol | small symbol singular | small symbol plural
 (def large-symbol->currency
-  {"£" ["pound" "pence"]
-   "$" ["dollar" "cent"]
-   "€" ["euro" "cent"]
+  {"£" ["pound" "penny" "pence"]
+   "$" ["dollar" "cent" "cents"]
+   "€" ["euro" "cent" "cents"]
    "¥" "yen"})

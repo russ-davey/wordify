@@ -118,9 +118,12 @@
 
 (defn currency-number->words
   [c]
-  (when-let [[large-symbol small-symbol] (mappings/large-symbol->currency (subs c 0 1))]
+  (when-let [[large-symbol small-symbol-singular small-symbol-plural] (mappings/large-symbol->currency (subs c 0 1))]
     (let [value (str/trim (subs c 1))
           [large-value small-value] (str/split value #"\.")
+          small-symbol (if (= small-value "01")
+                         small-symbol-singular
+                         small-symbol-plural)
           large-value-output (display-large-value large-value large-symbol)
           small-value-output (display-small-value small-value small-symbol)]
       (str large-value-output
