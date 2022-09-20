@@ -90,7 +90,7 @@
     (is (= "five and six tenths" (nth results 2)))
     (is (= "five hundred and sixty seven and two hundred and thirty two thousandths" (nth results 3)))))
 
-(deftest unhappy-paths
+(deftest number-unhappy-paths
   ; given a string returns nil
   (is (= nil (target/int-number->words "1")))
   ; given a string without numbers returns nil
